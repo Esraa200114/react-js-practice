@@ -34,7 +34,7 @@ const cartReducer = (state, action) => {
             items: updatedItems,
             totalAmount: newTotalAmount
         };
-    } else if (action.type === "REMOVE_ITEM"){
+    } else if (action.type === "REMOVE_ITEM") {
 
         // Getting the item to be removed from the cart
         const existingItemCartItemIndex = state.items.findIndex((item) => { return item.id === action.id });
@@ -45,10 +45,10 @@ const cartReducer = (state, action) => {
 
         let updatedItems;
 
-        if(existingItemCartItem.amount === 1){
+        if (existingItemCartItem.amount === 1) {
             updatedItems = state.items.filter((item) => item.id !== action.id);
         } else {
-            const updatedItem = {...existingItemCartItem, amount: existingItemCartItem.amount - 1};
+            const updatedItem = { ...existingItemCartItem, amount: existingItemCartItem.amount - 1 };
             updatedItems = [...state.items];
             updatedItems[existingItemCartItemIndex] = updatedItem;
         }
@@ -59,6 +59,8 @@ const cartReducer = (state, action) => {
             totalAmount: updateTotalAmount < 0 ? 0 : updateTotalAmount
         };
 
+    } else if (action.type === "CLEAR") {
+        return defaultCartState
     }
 
     return defaultCartState;
@@ -76,12 +78,17 @@ const CartProvider = (props) => {
         dispatchCartAction({ type: "REMOVE_ITEM", id: id });
     }
 
+    const clearCartHandler = () => {
+        dispatchCartAction({type: "CLEAR"})
+    }
+
     // Concrete context values that will be updated later
     const cartContext = {
         items: cartState.items,
         totalAmount: cartState.totalAmount,
         addItem: addItemToCartHandler,
-        removeItem: removeItemFromCartHandler
+        removeItem: removeItemFromCartHandler,
+        clearCart: clearCartHandler
     };
 
     return (
